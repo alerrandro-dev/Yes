@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="Yes.Application/Yes.Application.csproj" />
+  <Project Path="Yes.Domain/Yes.Domain.csproj" />
+  <Project Path="Yes.Infrastructure/Yes.Infrastructure.csproj" />
+  <Project Path="Yes.Shared/Yes.Shared.csproj" />
+  <Project Path="Yes.WebApi/Yes.WebApi.csproj" />
+</Solution>

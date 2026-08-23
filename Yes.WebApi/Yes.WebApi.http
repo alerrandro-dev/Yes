@@ -1,0 +1,29 @@
+@Yes.WebApi_HostAddress = http://localhost:5200
+@Yes.WepApi_UserId = empty
+
+### AddUser
+POST {{Yes.WebApi_HostAddress}}/api/users
+Content-Type: application/json
+Accept: application/json
+{
+  "username": "Tester",
+  "email": "tester@example.com",
+  "password": "tester123"
+}
+
+### GetUserById
+GET {{Yes.WebApi_HostAddress}}/api/users/{{Yes.WepApi_UserId}}
+Accept: application/json
+
+### UpdateUserById
+PUT {{Yes.WebApi_HostAddress}}/api/users/{{Yes.WepApi_UserId}}
+Content-Type: application/json
+Accept: application/json
+{
+  "username": "RealUser",
+  "email": "realuser@example.com",
+  "password": "realuser123"
+}
+
+### DeleteUserById
+DELETE {{Yes.WebApi_HostAddress}}/api/users/{{Yes.WepApi_UserId}}
