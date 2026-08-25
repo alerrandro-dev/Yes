@@ -2,4 +2,4 @@
 
 namespace Yes.Shared.Results.User;
 
-public union DeleteUserResult(Success, EntityNotFound);
+public union DeleteUserResult(Success, EntityNotFoundError);

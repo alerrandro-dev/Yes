@@ -3,4 +3,4 @@ using Yes.Shared.Responses;
 
 namespace Yes.Shared.Results.User;
 
-public union GetUserResult(UserResponse, EntityNotFound);
+public union GetUserResult(UserResponse, EntityNotFoundError);

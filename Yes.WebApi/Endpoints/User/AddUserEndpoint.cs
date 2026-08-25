@@ -10,9 +10,10 @@ public static class AddUserEndpoint
 {
     extension(IEndpointRouteBuilder routeBuilder)
     {
-        public IEndpointRouteBuilder UseAddUserEndpoint()
+        public IEndpointRouteBuilder MapAddUserEndpoint()
         {
-            routeBuilder.MapPost("", AddAsync);
+            routeBuilder.MapPost("", AddAsync)
+                .WithName("AddUser");
 
             return routeBuilder;
         }
@@ -25,8 +26,8 @@ public static class AddUserEndpoint
         return result switch
         {
             UserResponse response => Results.CreatedAtRoute("GetUserById", new { id = response.Id }, response),
-            ValidationErrors validationErrors => Results.BadRequest(validationErrors),
-            EntityAlreadyExists entityAlreadyExists => Results.BadRequest(entityAlreadyExists)
+            ValidationError validationError => Results.BadRequest(validationError),
+            EntityAlreadyExistsError entityAlreadyExists => Results.BadRequest(entityAlreadyExists)
         };
     }
 }

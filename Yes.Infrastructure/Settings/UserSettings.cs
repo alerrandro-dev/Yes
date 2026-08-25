@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Yes.Domain.Entities;
 
-namespace Yes.Infrastructure.Persistence.Settings;
+namespace Yes.Infrastructure.Settings;
 
 public class UserSettings : IEntityTypeConfiguration<UserEntity>
 {

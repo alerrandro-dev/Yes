@@ -1,5 +1,5 @@
 ﻿using Yes.Domain.Repositories;
-using Yes.Infrastructure.Persistence.Repositories;
+using Yes.Infrastructure.Repositories;
 
 namespace Yes.WebApi.DependencyInjections.User;
 
@@ -10,6 +10,7 @@ public static class UserRepositoryDependencyInjection
         public IServiceCollection AddUserRepositoryDependencyInjection()
         {
             services.AddScoped<IUserRepository, UserRepository>();
+
             return services;
         }
     }

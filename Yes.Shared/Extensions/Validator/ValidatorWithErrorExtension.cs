@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using Yes.Shared.Errors;
 
-namespace Yes.Shared.Validators.Extension;
+namespace Yes.Shared.Extensions.Validator;
 
 public static class ValidatorWithErrorExtension
 {

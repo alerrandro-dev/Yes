@@ -2,7 +2,7 @@
 using Yes.Domain.Entities;
 using Yes.Domain.Repositories;
 
-namespace Yes.Infrastructure.Persistence.Repositories;
+namespace Yes.Infrastructure.Repositories;
 
 public class UserRepository(AppDbContext context) : IUserRepository
 {
@@ -20,6 +20,12 @@ public class UserRepository(AppDbContext context) : IUserRepository
         return afectedRows > 0;
     }
 
+    public async Task<bool> ExistsUserWithIdAsync(Guid id)
+    {
+        return await context.Users
+            .AnyAsync(e => e.Id == id);
+    }
+
     public async Task<bool> ExistsWithEmailAsync(string email)
     {
         return await context.Users
@@ -29,6 +35,7 @@ public class UserRepository(AppDbContext context) : IUserRepository
     public async Task<UserEntity?> GetByIdAsync(Guid id)
     {
         return await context.Users
+            .Include(e => e.ToDoLists)
             .FirstOrDefaultAsync(e => e.Id == id);
     }
 
