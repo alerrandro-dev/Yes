@@ -1,11 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Yes.Domain.Entities;
 
-namespace Yes.Infrastructure.Persistence;
+namespace Yes.Infrastructure;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
     public DbSet<UserEntity> Users { get; set; }
+    public DbSet<ToDoListEntity> ToDoLists { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

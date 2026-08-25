@@ -1,33 +1,34 @@
 ﻿using Yes.Shared.Errors;
 using Yes.Shared.Errors.Entity;
-using Yes.Shared.Requests.User;
+using Yes.Shared.Requests.ToDoList;
 using Yes.Shared.Responses;
 using Yes.Shared.Services;
 
-namespace Yes.WebApi.Endpoints.User;
+namespace Yes.WebApi.Endpoints.ToDoList;
 
-public static class UpdateUserByIdEndpoint
+public static class UpdateToDoListByIdEndpoint
 {
     extension(IEndpointRouteBuilder routeBuilder)
     {
-        public IEndpointRouteBuilder MapUpdateUserByIdEndpoint()
+        public IEndpointRouteBuilder MapUpdateToDoListByIdEndpoint()
         {
             routeBuilder.MapPut("{id:guid}", UpdateByIdAsync)
-                .WithName("UpdateUserById");
+                .WithName("UpdateToDoList");
 
             return routeBuilder;
         }
     }
-    private static async Task<IResult> UpdateByIdAsync(IUserService service, Guid id, UpdateUserRequest request)
+
+    private static async Task<IResult> UpdateByIdAsync(IToDoListService service, Guid id, UpdateToDoListRequest request)
     {
         var result = await service.UpdateByIdAsync(id, request);
 
         return result switch
         {
-            UserResponse response => Results.Ok(response),
+            ToDoListResponse response => Results.Ok(response),
             ValidationError validationError => Results.BadRequest(validationError),
             EntityNotFoundError entityNotFound => Results.NotFound(entityNotFound),
-            EntityAlreadyExistsError entityAlreadyExists => Results.BadRequest(entityAlreadyExists)
+            EntityFromOwnerEntityAlreadyExistsError entityFromOwnerEntityAlreadyExists => Results.BadRequest(entityFromOwnerEntityAlreadyExists)
         };
     }
 }

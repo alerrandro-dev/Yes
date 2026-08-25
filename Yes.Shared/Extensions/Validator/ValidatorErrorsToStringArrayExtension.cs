@@ -1,6 +1,6 @@
 ﻿using FluentValidation.Results;
 
-namespace Yes.Shared.Validators.Extension;
+namespace Yes.Shared.Extensions.Validator;
 
 public static class ValidatorErrorsToStringArrayExtension
 {

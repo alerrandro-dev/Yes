@@ -5,15 +5,15 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Yes.Infrastructure.Persistence;
+using Yes.Infrastructure;
 
 #nullable disable
 
-namespace Yes.Infrastructure.Persistence.Migrations;
+namespace Yes.Infrastructure.Migrations;
 
 [DbContext(typeof(AppDbContext))]
-[Migration("20260823011109_InicialMigration")]
-partial class _20260823011109_InicialMigration
+[Migration("20260825184845_ToDoListMigration")]
+partial class _20260825184845_ToDoListMigration
 {
     /// <inheritdoc />
     protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,27 @@ partial class _20260823011109_InicialMigration
             .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
         SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+        modelBuilder.Entity("Yes.Domain.Entities.ToDoListEntity", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uniqueidentifier");
+
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasMaxLength(150)
+                    .HasColumnType("nvarchar(150)");
+
+                b.Property<Guid>("UserId")
+                    .HasColumnType("uniqueidentifier");
+
+                b.HasKey("Id");
+
+                b.HasIndex("UserId");
+
+                b.ToTable("ToDoLists");
+            });
 
         modelBuilder.Entity("Yes.Domain.Entities.UserEntity", b =>
             {
@@ -49,6 +70,22 @@ partial class _20260823011109_InicialMigration
                 b.HasKey("Id");
 
                 b.ToTable("Users");
+            });
+
+        modelBuilder.Entity("Yes.Domain.Entities.ToDoListEntity", b =>
+            {
+                b.HasOne("Yes.Domain.Entities.UserEntity", "User")
+                    .WithMany("ToDoLists")
+                    .HasForeignKey("UserId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.Navigation("User");
+            });
+
+        modelBuilder.Entity("Yes.Domain.Entities.UserEntity", b =>
+            {
+                b.Navigation("ToDoLists");
             });
 #pragma warning restore 612, 618
     }

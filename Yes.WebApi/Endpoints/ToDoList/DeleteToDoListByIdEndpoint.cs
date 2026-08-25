@@ -2,20 +2,21 @@
 using Yes.Shared.Results;
 using Yes.Shared.Services;
 
-namespace Yes.WebApi.Endpoints.User;
+namespace Yes.WebApi.Endpoints.ToDoList;
 
-public static class DeleteUserByIdEndpoint
+public static class DeleteToDoListByIdEndpoint
 {
     extension(IEndpointRouteBuilder routeBuilder)
     {
-        public IEndpointRouteBuilder MapDeleteUserByIdEndpoint()
+        public IEndpointRouteBuilder MapDeleteToDoListByIdEndpoint()
         {
-            routeBuilder.MapDelete("{id:guid}", DeleteByIdAsync);
+            routeBuilder.MapDelete("{id:guid}", DeleteByIdAsync)
+                .WithName("DeleteToDoListById");
 
             return routeBuilder;
         }
     }
-    private static async Task<IResult> DeleteByIdAsync(IUserService service, Guid id)
+    private static async Task<IResult> DeleteByIdAsync(IToDoListService service, Guid id)
     {
         var result = await service.DeleteByIdAsync(id);
 

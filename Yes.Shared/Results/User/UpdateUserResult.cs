@@ -4,4 +4,4 @@ using Yes.Shared.Responses;
 
 namespace Yes.Shared.Results.User;
 
-public union UpdateUserResult(UserResponse, ValidationErrors, EntityNotFound, EntityAlreadyExists);
+public union UpdateUserResult(UserResponse, ValidationError, EntityNotFoundError, EntityAlreadyExistsError);
