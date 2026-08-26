@@ -10,21 +10,18 @@ public static class GetUserByIdEndpoint
     {
         public IEndpointRouteBuilder MapGetUserByIdEndpoint()
         {
-            routeBuilder.MapGet("{id:guid}", GetByIdAsync)
-                .WithName("GetUserById");
+            routeBuilder.MapGet("{id:guid}", async (IUserService service, Guid id) =>
+            {
+                var result = await service.GetByIdAsync(id);
+
+                return result switch
+                {
+                    UserResponse response => Results.Ok(response),
+                    EntityNotFoundError entityNotFound => Results.NotFound(entityNotFound)
+                };
+            }).WithName("GetUserById");
 
             return routeBuilder;
         }
-    }
-
-    private static async Task<IResult> GetByIdAsync(IUserService service, Guid id)
-    {
-        var result = await service.GetByIdAsync(id);
-
-        return result switch
-        {
-            UserResponse response => Results.Ok(response),
-            EntityNotFoundError entityNotFound => Results.NotFound(entityNotFound)
-        };
     }
 }

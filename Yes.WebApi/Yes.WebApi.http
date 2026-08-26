@@ -30,7 +30,7 @@ Accept: application/json
 DELETE {{Yes.WebApi_HostAddress}}/api/users/{{Yes.WepApi_UserId}}
 
 ### AddToDoList
-POST {{Yes.WebApi_HostAddress}}/api/todolists
+POST {{Yes.WebApi_HostAddress}}/api/todo-lists
 Content-Type: application/json
 Accept: application/json
 {
@@ -39,11 +39,11 @@ Accept: application/json
 }
 
 ### GetToDoListById
-GET {{Yes.WebApi_HostAddress}}/api/todolists/{{Yes.WebApi_ToDoListId}}
+GET {{Yes.WebApi_HostAddress}}/api/todo-lists/{{Yes.WebApi_ToDoListId}}
 Accept: application/json
 
 ### UpdateToDoListById
-PUT {{Yes.WebApi_HostAddress}}/api/todolists/{{Yes.WebApi_ToDoListId}}
+PUT {{Yes.WebApi_HostAddress}}/api/todo-lists/{{Yes.WebApi_ToDoListId}}
 Content-Type: application/json
 Accept: application/json
 {
@@ -51,5 +51,5 @@ Accept: application/json
 }
 
 ### DeleteToDoListById
-DELETE {{Yes.WebApi_HostAddress}}/api/todolists/{{Yes.WebApi_ToDoListId}}
+DELETE {{Yes.WebApi_HostAddress}}/api/todo-lists/{{Yes.WebApi_ToDoListId}}
 Accept: application/json

@@ -10,19 +10,18 @@ public static class DeleteUserByIdEndpoint
     {
         public IEndpointRouteBuilder MapDeleteUserByIdEndpoint()
         {
-            routeBuilder.MapDelete("{id:guid}", DeleteByIdAsync);
+            routeBuilder.MapDelete("{id:guid}", async (IUserService service, Guid id) =>
+            {
+                var result = await service.DeleteByIdAsync(id);
+
+                return result switch
+                {
+                    Success success => Results.NoContent(),
+                    EntityNotFoundError entityNotFound => Results.NotFound(entityNotFound)
+                };
+            }).WithName("DeleteUserById");
 
             return routeBuilder;
         }
-    }
-    private static async Task<IResult> DeleteByIdAsync(IUserService service, Guid id)
-    {
-        var result = await service.DeleteByIdAsync(id);
-
-        return result switch
-        {
-            Success success => Results.NoContent(),
-            EntityNotFoundError entityNotFound => Results.NotFound(entityNotFound)
-        };
     }
 }
