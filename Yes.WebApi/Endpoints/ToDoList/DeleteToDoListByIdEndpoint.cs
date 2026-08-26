@@ -10,20 +10,18 @@ public static class DeleteToDoListByIdEndpoint
     {
         public IEndpointRouteBuilder MapDeleteToDoListByIdEndpoint()
         {
-            routeBuilder.MapDelete("{id:guid}", DeleteByIdAsync)
-                .WithName("DeleteToDoListById");
+            routeBuilder.MapDelete("{id:guid}", async (IToDoListService service, Guid id) =>
+            {
+                var result = await service.DeleteByIdAsync(id);
+
+                return result switch
+                {
+                    Success success => Results.NoContent(),
+                    EntityNotFoundError entityNotFound => Results.NotFound(entityNotFound)
+                };
+            }).WithName("DeleteToDoListById");
 
             return routeBuilder;
         }
-    }
-    private static async Task<IResult> DeleteByIdAsync(IToDoListService service, Guid id)
-    {
-        var result = await service.DeleteByIdAsync(id);
-
-        return result switch
-        {
-            Success success => Results.NoContent(),
-            EntityNotFoundError entityNotFound => Results.NotFound(entityNotFound)
-        };
     }
 }

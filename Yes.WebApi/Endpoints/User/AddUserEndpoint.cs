@@ -12,22 +12,19 @@ public static class AddUserEndpoint
     {
         public IEndpointRouteBuilder MapAddUserEndpoint()
         {
-            routeBuilder.MapPost("", AddAsync)
-                .WithName("AddUser");
+            routeBuilder.MapPost("", async (IUserService service, AddUserRequest request) =>
+            {
+                var result = await service.AddAsync(request);
+
+                return result switch
+                {
+                    UserResponse response => Results.CreatedAtRoute("GetUserById", new { id = response.Id }, response),
+                    ValidationError validationError => Results.BadRequest(validationError),
+                    EntityAlreadyExistsError entityAlreadyExists => Results.BadRequest(entityAlreadyExists)
+                };
+            }).WithName("AddUser");
 
             return routeBuilder;
         }
-    }
-
-    private static async Task<IResult> AddAsync(IUserService service, AddUserRequest request)
-    {
-        var result = await service.AddAsync(request);
-
-        return result switch
-        {
-            UserResponse response => Results.CreatedAtRoute("GetUserById", new { id = response.Id }, response),
-            ValidationError validationError => Results.BadRequest(validationError),
-            EntityAlreadyExistsError entityAlreadyExists => Results.BadRequest(entityAlreadyExists)
-        };
     }
 }

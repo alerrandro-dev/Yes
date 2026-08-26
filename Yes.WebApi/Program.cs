@@ -33,7 +33,7 @@ userGroup.MapAddUserEndpoint()
     .MapUpdateUserByIdEndpoint()
     .MapDeleteUserByIdEndpoint();
 
-var toDoListGroup = app.MapGroup("/api/todolists");
+var toDoListGroup = app.MapGroup("/api/todo-lists");
 toDoListGroup.MapAddToDoListEndpoint()
     .MapGetToDoListByIdEndpoint()
     .MapUpdateToDoListByIdEndpoint()

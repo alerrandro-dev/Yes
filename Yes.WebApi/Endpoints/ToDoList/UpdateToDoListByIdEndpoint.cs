@@ -12,23 +12,20 @@ public static class UpdateToDoListByIdEndpoint
     {
         public IEndpointRouteBuilder MapUpdateToDoListByIdEndpoint()
         {
-            routeBuilder.MapPut("{id:guid}", UpdateByIdAsync)
-                .WithName("UpdateToDoList");
+            routeBuilder.MapPut("{id:guid}", async (IToDoListService service, Guid id, UpdateToDoListRequest request) =>
+            {
+                var result = await service.UpdateByIdAsync(id, request);
+
+                return result switch
+                {
+                    ToDoListResponse response => Results.Ok(response),
+                    ValidationError validationError => Results.BadRequest(validationError),
+                    EntityNotFoundError entityNotFound => Results.NotFound(entityNotFound),
+                    EntityFromOwnerEntityAlreadyExistsError entityFromOwnerEntityAlreadyExists => Results.BadRequest(entityFromOwnerEntityAlreadyExists)
+                };
+            }).WithName("UpdateToDoListById");
 
             return routeBuilder;
         }
-    }
-
-    private static async Task<IResult> UpdateByIdAsync(IToDoListService service, Guid id, UpdateToDoListRequest request)
-    {
-        var result = await service.UpdateByIdAsync(id, request);
-
-        return result switch
-        {
-            ToDoListResponse response => Results.Ok(response),
-            ValidationError validationError => Results.BadRequest(validationError),
-            EntityNotFoundError entityNotFound => Results.NotFound(entityNotFound),
-            EntityFromOwnerEntityAlreadyExistsError entityFromOwnerEntityAlreadyExists => Results.BadRequest(entityFromOwnerEntityAlreadyExists)
-        };
     }
 }
