@@ -20,6 +20,12 @@ public class ToDoListRepository(AppDbContext context) : IToDoListRepository
         return afectedRows > 0;
     }
 
+    public async Task<bool> ExistsWithIdAsync(Guid id)
+    {
+        return await context.ToDoLists
+            .AnyAsync(e => e.Id == id);
+    }
+
     public async Task<bool> ExistsWithNameFromUserWithIdAsync(string name, Guid userId)
     {
         return await context.ToDoLists
