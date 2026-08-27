@@ -7,6 +7,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 {
     public DbSet<UserEntity> Users { get; set; }
     public DbSet<ToDoListEntity> ToDoLists { get; set; }
+    public DbSet<TaskEntity> Tasks { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

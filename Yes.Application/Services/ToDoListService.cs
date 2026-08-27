@@ -18,7 +18,7 @@ public class ToDoListService(IToDoListRepository repository, IUserRepository use
 {
     public async Task<AddToDoListResult> AddAsync(AddToDoListRequest request)
     {
-        var validationResult = addValidator.Validate(request);
+        var validationResult = await addValidator.ValidateAsync(request);
         if (!validationResult.IsValid) return new ValidationError(validationResult.ErrorsToStringArray());
 
         var existsUserWithId = await userRepository.ExistsUserWithIdAsync(request.UserId.Value);
@@ -56,7 +56,7 @@ public class ToDoListService(IToDoListRepository repository, IUserRepository use
 
     public async Task<UpdateToDoListResult> UpdateByIdAsync(Guid id, UpdateToDoListRequest request)
     {
-        var validationResult = updateValidator.Validate(request);
+        var validationResult = await updateValidator.ValidateAsync(request);
         if (!validationResult.IsValid) return new ValidationError(validationResult.ErrorsToStringArray());
 
         var entity = await repository.GetByIdAsync(id);

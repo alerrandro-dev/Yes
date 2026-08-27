@@ -7,4 +7,6 @@ public class ToDoListEntity
 
     public Guid UserId { get; set; }
     public UserEntity User { get; set; }
+
+    public List<TaskEntity> Tasks { get; set; }
 }

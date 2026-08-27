@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Yes.Infrastructure;
+using Yes.WebApi.DependencyInjections.Task;
 using Yes.WebApi.DependencyInjections.ToDoList;
 using Yes.WebApi.DependencyInjections.User;
 using Yes.WebApi.Endpoints.ToDoList;
@@ -23,18 +24,22 @@ builder.Services.AddToDoListRepositoryDependencyInjection()
     .AddAddToDoListValidatorDependencyInjection()
     .AddUpdateToDoListValidatorDependencyInjection();
 
+builder.Services.AddTaskRepositoryDependencyInjection()
+    .AddTaskServiceDependencyInjection()
+    .AddAddTaskValidatorDependencyInjection()
+    .AddUpdateTaskValidatorDependencyInjection();
+
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionHandlerMiddleware>();
 
-var userGroup = app.MapGroup("/api/users");
-userGroup.MapAddUserEndpoint()
+app.MapGroup("api/users").MapAddUserEndpoint()
     .MapGetUserByIdEndpoint()
     .MapUpdateUserByIdEndpoint()
     .MapDeleteUserByIdEndpoint();
 
-var toDoListGroup = app.MapGroup("/api/todo-lists");
-toDoListGroup.MapAddToDoListEndpoint()
+app.MapGroup("api/todo-lists")
+    .MapAddToDoListEndpoint()
     .MapGetToDoListByIdEndpoint()
     .MapUpdateToDoListByIdEndpoint()
     .MapDeleteToDoListByIdEndpoint();
