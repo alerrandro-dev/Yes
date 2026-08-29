@@ -1,6 +1,7 @@
 @Yes.WebApi_HostAddress = http://localhost:5200
 @Yes.WepApi_UserId = empty
 @Yes.WebApi_ToDoListId = empty
+@Yes.WebApi_TaskId = empty
 
 ### AddUser
 POST {{Yes.WebApi_HostAddress}}/api/users
@@ -52,4 +53,31 @@ Accept: application/json
 
 ### DeleteToDoListById
 DELETE {{Yes.WebApi_HostAddress}}/api/todo-lists/{{Yes.WebApi_ToDoListId}}
+Accept: application/json
+
+### AddTask
+POST {{Yes.WebApi_HostAddress}}/api/tasks
+Content-Type: application/json
+Accept: application/json
+{
+  "name": "Buy an apple",
+  "toDoListId": "{{Yes.WebApi_ToDoListId}}"
+}
+
+### GetTaskById
+GET {{Yes.WebApi_HostAddress}}/api/tasks/{{Yes.WebApi_TaskId}}
+Accept: application/json
+
+### UpdateTaskById
+PUT {{Yes.WebApi_HostAddress}}/api/tasks/{{Yes.WebApi_TaskId}}
+Content-Type: application/json
+Accept: application/json
+{
+  "name": "Buy a green apple",
+  "description": "in city market",
+  "isCompleted": true
+}
+
+### DeleteTaskById
+DELETE {{Yes.WebApi_HostAddress}}/api/tasks/{{Yes.WebApi_TaskId}}
 Accept: application/json

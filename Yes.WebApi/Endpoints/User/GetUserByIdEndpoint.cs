@@ -17,7 +17,7 @@ public static class GetUserByIdEndpoint
                 return result switch
                 {
                     UserResponse response => Results.Ok(response),
-                    EntityNotFoundError entityNotFound => Results.NotFound(entityNotFound)
+                    EntityNotFoundError entityNotFoundError => Results.NotFound(entityNotFoundError)
                 };
             }).WithName("GetUserById");
 

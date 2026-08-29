@@ -3,22 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Yes.Infrastructure;
 
 #nullable disable
 
-namespace Yes.Infrastructure.Persistence.Migrations;
+namespace Yes.Infrastructure.Migrations;
 
 [DbContext(typeof(AppDbContext))]
-partial class AppDbContextModelSnapshot : ModelSnapshot
+[Migration("20260829133647_TaskMigration")]
+partial class _20260829133647_TaskMigration
 {
-    // If you encounter a merge conflict in the line below, it means you need to
-    // discard one of the migration branches and recreate its migrations on top of
-    // the other branch. See https://aka.ms/efcore-docs-migrations-conflicts for more info.
-    public override string LastMigrationId => "20260829134739_TaskDescriptionIsOptionalMigration";
-
-    protected override void BuildModel(ModelBuilder modelBuilder)
+    /// <inheritdoc />
+    protected override void BuildTargetModel(ModelBuilder modelBuilder)
     {
 #pragma warning disable 612, 618
         modelBuilder
@@ -34,6 +32,7 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
                     .HasColumnType("uniqueidentifier");
 
                 b.Property<string>("Description")
+                    .IsRequired()
                     .HasMaxLength(255)
                     .HasColumnType("nvarchar(255)");
 

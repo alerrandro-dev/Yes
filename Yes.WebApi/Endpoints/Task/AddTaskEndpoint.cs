@@ -1,29 +1,29 @@
 ﻿using Yes.Shared.Errors;
 using Yes.Shared.Errors.Entity;
-using Yes.Shared.Requests.ToDoList;
+using Yes.Shared.Requests.Task;
 using Yes.Shared.Responses;
 using Yes.Shared.Services;
 
-namespace Yes.WebApi.Endpoints.ToDoList;
+namespace Yes.WebApi.Endpoints.Task;
 
-public static class AddToDoListEndpoint
+public static class AddTaskEndpoint
 {
     extension(IEndpointRouteBuilder routeBuilder)
     {
-        public IEndpointRouteBuilder MapAddToDoListEndpoint()
+        public IEndpointRouteBuilder MapAddTaskEndpoint()
         {
-            routeBuilder.MapPost("", async (IToDoListService service, AddToDoListRequest request) =>
+            routeBuilder.MapPost("", async (ITaskService service, AddTaskRequest request) =>
             {
                 var result = await service.AddAsync(request);
 
                 return result switch
                 {
-                    ToDoListResponse response => Results.CreatedAtRoute("GetToDoListById", new { id = response.Id }, response),
-                    ValidationError validationErrors => Results.BadRequest(validationErrors),
+                    TaskResponse response => Results.CreatedAtRoute("GetTaskById", new { id = response.Id }, response),
+                    ValidationError validationError => Results.BadRequest(validationError),
                     EntityNotFoundError entityNotFoundError => Results.NotFound(entityNotFoundError),
                     EntityFromOwnerEntityAlreadyExistsError entityFromOwnerEntityAlreadyExistsError => Results.BadRequest(entityFromOwnerEntityAlreadyExistsError)
                 };
-            }).WithName("AddToDoList");
+            }).WithName("AddTask");
 
             return routeBuilder;
         }

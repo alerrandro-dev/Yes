@@ -17,7 +17,7 @@ public static class DeleteToDoListByIdEndpoint
                 return result switch
                 {
                     Success success => Results.NoContent(),
-                    EntityNotFoundError entityNotFound => Results.NotFound(entityNotFound)
+                    EntityNotFoundError entityNotFoundError => Results.NotFound(entityNotFoundError)
                 };
             }).WithName("DeleteToDoListById");
 

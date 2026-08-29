@@ -20,7 +20,7 @@ public static class AddUserEndpoint
                 {
                     UserResponse response => Results.CreatedAtRoute("GetUserById", new { id = response.Id }, response),
                     ValidationError validationError => Results.BadRequest(validationError),
-                    EntityAlreadyExistsError entityAlreadyExists => Results.BadRequest(entityAlreadyExists)
+                    EntityAlreadyExistsError entityAlreadyExistsError => Results.BadRequest(entityAlreadyExistsError)
                 };
             }).WithName("AddUser");
 
