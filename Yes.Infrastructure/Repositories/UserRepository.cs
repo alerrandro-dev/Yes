@@ -36,6 +36,7 @@ public class UserRepository(AppDbContext context) : IUserRepository
     {
         return await context.Users
             .Include(e => e.ToDoLists)
+                .ThenInclude(e => e.Tasks)
             .FirstOrDefaultAsync(e => e.Id == id);
     }
 

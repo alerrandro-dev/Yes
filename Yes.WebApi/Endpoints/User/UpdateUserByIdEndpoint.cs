@@ -20,8 +20,8 @@ public static class UpdateUserByIdEndpoint
                 {
                     UserResponse response => Results.Ok(response),
                     ValidationError validationError => Results.BadRequest(validationError),
-                    EntityNotFoundError entityNotFound => Results.NotFound(entityNotFound),
-                    EntityAlreadyExistsError entityAlreadyExists => Results.BadRequest(entityAlreadyExists)
+                    EntityNotFoundError entityNotFoundError => Results.NotFound(entityNotFoundError),
+                    EntityAlreadyExistsError entityAlreadyExistsError => Results.BadRequest(entityAlreadyExistsError)
                 };
             }).WithName("UpdateUserById");
 

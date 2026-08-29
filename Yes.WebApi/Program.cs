@@ -3,6 +3,7 @@ using Yes.Infrastructure;
 using Yes.WebApi.DependencyInjections.Task;
 using Yes.WebApi.DependencyInjections.ToDoList;
 using Yes.WebApi.DependencyInjections.User;
+using Yes.WebApi.Endpoints.Task;
 using Yes.WebApi.Endpoints.ToDoList;
 using Yes.WebApi.Endpoints.User;
 using Yes.WebApi.Middlewares;
@@ -43,5 +44,11 @@ app.MapGroup("api/todo-lists")
     .MapGetToDoListByIdEndpoint()
     .MapUpdateToDoListByIdEndpoint()
     .MapDeleteToDoListByIdEndpoint();
+
+app.MapGroup("api/tasks")
+    .MapAddTaskEndpoint()
+    .MapGetTaskByIdEndpoint()
+    .MapUpdateTaskByIdEndpoint()
+    .MapDeleteTaskByIdEndpoint();
 
 await app.RunAsync();

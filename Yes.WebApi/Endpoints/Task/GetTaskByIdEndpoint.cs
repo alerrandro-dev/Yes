@@ -2,24 +2,24 @@
 using Yes.Shared.Responses;
 using Yes.Shared.Services;
 
-namespace Yes.WebApi.Endpoints.ToDoList;
+namespace Yes.WebApi.Endpoints.Task;
 
-public static class GetToDoListByIdEndpoint
+public static class GetTaskByIdEndpoint
 {
     extension(IEndpointRouteBuilder routeBuilder)
     {
-        public IEndpointRouteBuilder MapGetToDoListByIdEndpoint()
+        public IEndpointRouteBuilder MapGetTaskByIdEndpoint()
         {
-            routeBuilder.MapGet("{id:guid}", async (IToDoListService service, Guid id) =>
+            routeBuilder.MapGet("{id:guid}", async (ITaskService service, Guid id) =>
             {
                 var result = await service.GetByIdAsync(id);
 
                 return result switch
                 {
-                    ToDoListResponse response => Results.Ok(response),
+                    TaskResponse response => Results.Ok(response),
                     EntityNotFoundError entityNotFoundError => Results.NotFound(entityNotFoundError)
                 };
-            }).WithName("GetToDoListById");
+            }).WithName("GetTaskById");
 
             return routeBuilder;
         }

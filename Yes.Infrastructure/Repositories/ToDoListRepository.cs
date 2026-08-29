@@ -35,6 +35,7 @@ public class ToDoListRepository(AppDbContext context) : IToDoListRepository
     public async Task<ToDoListEntity?> GetByIdAsync(Guid id)
     {
         return await context.ToDoLists
+            .Include(e => e.Tasks)
             .FirstOrDefaultAsync(e => e.Id == id);
     }
 
