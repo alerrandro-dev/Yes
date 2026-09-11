@@ -4,4 +4,4 @@ using Yes.Shared.Responses;
 
 namespace Yes.Shared.Results.ToDoList;
 
-public union UpdateToDoListResult(ToDoListResponse, ValidationError, EntityNotFoundError, EntityFromOwnerEntityAlreadyExistsError);
+public union UpdateToDoListResult(ToDoListResponse, ValidationError, EntityNotFoundError, EntityBelongToOtherUserError, EntityFromOwnerEntityAlreadyExistsError);

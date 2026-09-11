@@ -3,4 +3,4 @@ using Yes.Shared.Responses;
 
 namespace Yes.Shared.Results.Task;
 
-public union GetTaskResult(TaskResponse, EntityNotFoundError);
+public union GetTaskResult(TaskResponse, EntityNotFoundError, EntityBelongToOtherUserError);

@@ -19,7 +19,8 @@ public static class DeleteTaskByIdEnpoint
                     Success success => Results.NoContent(),
                     EntityNotFoundError entityNotFoundError => Results.NotFound(entityNotFoundError)
                 };
-            }).WithName("DeleteTaskById");
+            }).RequireAuthorization()
+                .WithName("DeleteTaskById");
 
             return routeBuilder;
         }

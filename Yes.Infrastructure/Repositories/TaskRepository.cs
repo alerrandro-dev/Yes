@@ -11,13 +11,9 @@ public class TaskRepository(AppDbContext context) : ITaskRepository
         await context.Tasks.AddAsync(entity);
     }
 
-    public async Task<bool> DeleteByIdAsync(Guid id)
+    public async Task DeleteAsync(TaskEntity entity)
     {
-        int afectedRows = await context.Tasks
-            .Where(e => e.Id == id)
-            .ExecuteDeleteAsync();
-
-        return afectedRows > 0;
+        context.Tasks.Remove(entity);
     }
 
     public async Task<bool> ExistsWithNameFromToDoListWithIdAsync(string name, Guid toDoListId)

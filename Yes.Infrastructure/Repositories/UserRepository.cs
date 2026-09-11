@@ -32,11 +32,21 @@ public class UserRepository(AppDbContext context) : IUserRepository
             .AnyAsync(e => e.Email == email);
     }
 
+    public Task<UserEntity?> GetByEmailAsync(string email)
+    {
+        return context.Users
+            .Include(e => e.ToDoLists)
+                .ThenInclude(e => e.Tasks)
+            .AsSplitQuery()
+            .FirstOrDefaultAsync(e => e.Email == email);
+    }
+
     public async Task<UserEntity?> GetByIdAsync(Guid id)
     {
         return await context.Users
             .Include(e => e.ToDoLists)
                 .ThenInclude(e => e.Tasks)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(e => e.Id == id);
     }
 

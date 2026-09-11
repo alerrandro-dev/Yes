@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>net11.0</TargetFramework>
-	<LangVersion>preview</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -10,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="12.1.1" />
     <PackageReference Include="Mapster" Version="10.1.0-pre02" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="11.0.0-rc.1.26425.128" />
   </ItemGroup>
 
   <ItemGroup>

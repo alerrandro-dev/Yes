@@ -5,9 +5,9 @@ using Yes.Shared.Requests.ToDoList;
 
 namespace Yes.Shared.Validators.ToDoList;
 
-public class UpdateToDoListValidator : AbstractValidator<UpdateToDoListRequest>
+public class FullUpdateToDoListValidator : AbstractValidator<UpdateToDoListRequest>
 {
-    public UpdateToDoListValidator()
+    public FullUpdateToDoListValidator()
     {
         RuleFor(r => r.Name)
             .NotEmpty().WithError(new FieldIsRequiredError(nameof(UpdateToDoListRequest.Name)))

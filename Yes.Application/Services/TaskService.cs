@@ -1,7 +1,9 @@
 ﻿using FluentValidation;
 using Mapster;
+using Microsoft.Extensions.DependencyInjection;
 using Yes.Domain.Entities;
 using Yes.Domain.Repositories;
+using Yes.Shared.Contexts;
 using Yes.Shared.Errors;
 using Yes.Shared.Errors.Entity;
 using Yes.Shared.Extensions.Validator;
@@ -13,16 +15,18 @@ using Yes.Shared.Services;
 
 namespace Yes.Application.Services;
 
-public class TaskService(ITaskRepository repository, IToDoListRepository toDoListRepository, IValidator<AddTaskRequest> addValidator,
-    IValidator<UpdateTaskRequest> updateValidator) : ITaskService
+public class TaskService(ITaskRepository repository, IToDoListRepository toDoListRepository, IUserContext userContext,
+    IValidator<AddTaskRequest> addValidator, [FromKeyedServices("FullUpdateTaskValidator")] IValidator<UpdateTaskRequest> fullUpdateValidator,
+    [FromKeyedServices("PartialUpdateTaskValidator")] IValidator<UpdateTaskRequest> partialUpdateValidator) : ITaskService
 {
     public async Task<AddTaskResult> AddAsync(AddTaskRequest request)
     {
         var validationResult = await addValidator.ValidateAsync(request);
         if (!validationResult.IsValid) return new ValidationError(validationResult.ErrorsToStringArray());
 
-        var existsToDoListWithId = await toDoListRepository.ExistsWithIdAsync(request.ToDoListId.Value);
-        if (!existsToDoListWithId) return new EntityNotFoundError(nameof(ToDoListEntity), nameof(ToDoListEntity.Id), request.ToDoListId);
+        var toDoList = await toDoListRepository.GetByIdAsync(request.ToDoListId.Value);
+        if (toDoList is null) return new EntityNotFoundError(nameof(ToDoListEntity), nameof(ToDoListEntity.Id), request.ToDoListId);
+        if (toDoList.UserId != userContext.Id) return new EntityBelongToOtherUserError(nameof(ToDoListEntity), nameof(ToDoListEntity.Id), request.ToDoListId);
 
         var existsWithNameFromToDoListWithId = await repository.ExistsWithNameFromToDoListWithIdAsync(request.Name, request.ToDoListId.Value);
         if (existsWithNameFromToDoListWithId) return new EntityFromOwnerEntityAlreadyExistsError(nameof(TaskEntity), nameof(TaskEntity.Name), request.Name,
@@ -39,8 +43,15 @@ public class TaskService(ITaskRepository repository, IToDoListRepository toDoLis
 
     public async Task<DeleteTaskResult> DeleteByIdAsync(Guid id)
     {
-        bool deleted = await repository.DeleteByIdAsync(id);
-        if (!deleted) return new EntityNotFoundError(nameof(TaskEntity), nameof(TaskEntity.Id), id);
+        var entity = await repository.GetByIdAsync(id);
+        if (entity is null) return new EntityNotFoundError(nameof(TaskEntity), nameof(TaskEntity.Id), id);
+
+        var toDoList = await toDoListRepository.GetByIdAsync(entity.ToDoListId);
+        if (toDoList is null) return new EntityNotFoundError(nameof(ToDoListEntity), nameof(ToDoListEntity.Id), entity.ToDoListId);
+        if (toDoList.UserId != userContext.Id) return new EntityBelongToOtherUserError(nameof(ToDoListEntity), nameof(ToDoListEntity.Id), entity.ToDoListId);
+
+        await repository.DeleteAsync(entity);
+        await repository.SaveChangesAsync();
 
         return new Success();
     }
@@ -50,23 +61,61 @@ public class TaskService(ITaskRepository repository, IToDoListRepository toDoLis
         var entity = await repository.GetByIdAsync(id);
         if (entity is null) return new EntityNotFoundError(nameof(TaskEntity), nameof(TaskEntity.Id), id);
 
+        var toDoList = await toDoListRepository.GetByIdAsync(entity.ToDoListId);
+        if (toDoList is null) return new EntityNotFoundError(nameof(ToDoListEntity), nameof(ToDoListEntity.Id), entity.ToDoListId);
+        if (toDoList.UserId != userContext.Id) return new EntityBelongToOtherUserError(nameof(ToDoListEntity), nameof(ToDoListEntity.Id), entity.ToDoListId);
+
         var reponse = entity.Adapt<TaskResponse>();
         return reponse;
     }
 
-    public async Task<UpdateTaskResult> UpdateByIdAsync(Guid id, UpdateTaskRequest request)
+    public async Task<UpdateTaskResult> FullUpdateByIdAsync(Guid id, UpdateTaskRequest request)
     {
-        var validationResult = await updateValidator.ValidateAsync(request);
+        var validationResult = await fullUpdateValidator.ValidateAsync(request);
         if (!validationResult.IsValid) return new ValidationError(validationResult.ErrorsToStringArray());
 
         var entity = await repository.GetByIdAsync(id);
         if (entity is null) return new EntityNotFoundError(nameof(TaskEntity), nameof(TaskEntity.Id), id);
+
+        var toDoList = await toDoListRepository.GetByIdAsync(entity.ToDoListId);
+        if (toDoList is null) return new EntityNotFoundError(nameof(ToDoListEntity), nameof(ToDoListEntity.Id), entity.ToDoListId);
+        if (toDoList.UserId != userContext.Id) return new EntityBelongToOtherUserError(nameof(ToDoListEntity), nameof(ToDoListEntity.Id), entity.ToDoListId);
 
         var existsWithNameFromToDoListWithId = await repository.ExistsWithNameFromToDoListWithIdAsync(request.Name, entity.ToDoListId);
         if (existsWithNameFromToDoListWithId) return new EntityFromOwnerEntityAlreadyExistsError(nameof(TaskEntity), nameof(TaskEntity.Name), request.Name,
             nameof(ToDoListEntity), nameof(ToDoListEntity.Id), entity.ToDoListId);
 
         request.Adapt(entity);
+        await repository.SaveChangesAsync();
+
+        var response = entity.Adapt<TaskResponse>();
+        return response;
+    }
+
+    public async Task<UpdateTaskResult> PartialUpdateByIdAsync(Guid id, UpdateTaskRequest request)
+    {
+        var validationResult = await partialUpdateValidator.ValidateAsync(request);
+        if (!validationResult.IsValid) return new ValidationError(validationResult.ErrorsToStringArray());
+
+        var entity = await repository.GetByIdAsync(id);
+        if (entity is null) return new EntityNotFoundError(nameof(TaskEntity), nameof(TaskEntity.Id), id);
+
+        var toDoList = await toDoListRepository.GetByIdAsync(entity.ToDoListId);
+        if (toDoList is null) return new EntityNotFoundError(nameof(ToDoListEntity), nameof(ToDoListEntity.Id), entity.ToDoListId);
+        if (toDoList.UserId != userContext.Id) return new EntityBelongToOtherUserError(nameof(ToDoListEntity), nameof(ToDoListEntity.Id), entity.ToDoListId);
+
+        if (request.Name is not null)
+        {
+            var existsWithNameFromToDoListWithId = await repository.ExistsWithNameFromToDoListWithIdAsync(request.Name, entity.ToDoListId);
+            if (existsWithNameFromToDoListWithId) return new EntityFromOwnerEntityAlreadyExistsError(nameof(TaskEntity), nameof(TaskEntity.Name), request.Name,
+                nameof(ToDoListEntity), nameof(ToDoListEntity.Id), entity.ToDoListId);
+        }
+
+        var typeAdapterConfig = new TypeAdapterConfig();
+        typeAdapterConfig.NewConfig<UpdateTaskRequest, TaskEntity>()
+            .IgnoreNullValues(true);
+
+        request.Adapt(entity, typeAdapterConfig);
         await repository.SaveChangesAsync();
 
         var response = entity.Adapt<TaskResponse>();

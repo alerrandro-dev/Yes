@@ -6,15 +6,15 @@ using Yes.Shared.Services;
 
 namespace Yes.WebApi.Endpoints.Task;
 
-public static class UpdateTaskByIdEndpoint
+public static class FullUpdateTaskByIdEndpoint
 {
     extension(IEndpointRouteBuilder routeBuilder)
     {
-        public IEndpointRouteBuilder MapUpdateTaskByIdEndpoint()
+        public IEndpointRouteBuilder MapFullUpdateTaskByIdEndpoint()
         {
             routeBuilder.MapPut("{id:guid}", async (ITaskService service, Guid id, UpdateTaskRequest request) =>
             {
-                var result = await service.UpdateByIdAsync(id, request);
+                var result = await service.FullUpdateByIdAsync(id, request);
 
                 return result switch
                 {
@@ -23,7 +23,8 @@ public static class UpdateTaskByIdEndpoint
                     EntityNotFoundError entityNotFoundError => Results.NotFound(entityNotFoundError),
                     EntityFromOwnerEntityAlreadyExistsError entityFromOwnerEntityAlreadyExistsError => Results.BadRequest(entityFromOwnerEntityAlreadyExistsError)
                 };
-            }).WithName("UpdateTaskById");
+            }).RequireAuthorization()
+                .WithName("FullUpdateTaskById");
 
             return routeBuilder;
         }

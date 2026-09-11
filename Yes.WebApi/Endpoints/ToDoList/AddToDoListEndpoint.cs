@@ -23,7 +23,8 @@ public static class AddToDoListEndpoint
                     EntityNotFoundError entityNotFoundError => Results.NotFound(entityNotFoundError),
                     EntityFromOwnerEntityAlreadyExistsError entityFromOwnerEntityAlreadyExistsError => Results.BadRequest(entityFromOwnerEntityAlreadyExistsError)
                 };
-            }).WithName("AddToDoList");
+            }).RequireAuthorization()
+                .WithName("AddToDoList");
 
             return routeBuilder;
         }

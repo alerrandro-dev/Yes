@@ -4,4 +4,4 @@ using Yes.Shared.Responses;
 
 namespace Yes.Shared.Results.Task;
 
-public union UpdateTaskResult(TaskResponse, ValidationError, EntityNotFoundError, EntityFromOwnerEntityAlreadyExistsError);
+public union UpdateTaskResult(TaskResponse, ValidationError, EntityNotFoundError, EntityBelongToOtherUserError, EntityFromOwnerEntityAlreadyExistsError);

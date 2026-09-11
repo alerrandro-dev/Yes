@@ -1,29 +1,30 @@
 ﻿using Yes.Shared.Errors;
 using Yes.Shared.Errors.Entity;
-using Yes.Shared.Requests.ToDoList;
+using Yes.Shared.Requests.Task;
 using Yes.Shared.Responses;
 using Yes.Shared.Services;
 
-namespace Yes.WebApi.Endpoints.ToDoList;
+namespace Yes.WebApi.Endpoints.Task;
 
-public static class UpdateToDoListByIdEndpoint
+public static class PartialUpdateTaskByIdEndpoint
 {
     extension(IEndpointRouteBuilder routeBuilder)
     {
-        public IEndpointRouteBuilder MapUpdateToDoListByIdEndpoint()
+        public IEndpointRouteBuilder MapPartialUpdateTaskByIdEndpoint()
         {
-            routeBuilder.MapPut("{id:guid}", async (IToDoListService service, Guid id, UpdateToDoListRequest request) =>
+            routeBuilder.MapPatch("{id:guid}", async (ITaskService service, Guid id, UpdateTaskRequest request) =>
             {
-                var result = await service.UpdateByIdAsync(id, request);
+                var result = await service.PartialUpdateByIdAsync(id, request);
 
                 return result switch
                 {
-                    ToDoListResponse response => Results.Ok(response),
+                    TaskResponse response => Results.Ok(response),
                     ValidationError validationError => Results.BadRequest(validationError),
                     EntityNotFoundError entityNotFoundError => Results.NotFound(entityNotFoundError),
                     EntityFromOwnerEntityAlreadyExistsError entityFromOwnerEntityAlreadyExistsError => Results.BadRequest(entityFromOwnerEntityAlreadyExistsError)
                 };
-            }).WithName("UpdateToDoListById");
+            }).RequireAuthorization()
+                .WithName("PartialUpdateTaskById");
 
             return routeBuilder;
         }

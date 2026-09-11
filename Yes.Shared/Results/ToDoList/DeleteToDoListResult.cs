@@ -2,4 +2,4 @@
 
 namespace Yes.Shared.Results.ToDoList;
 
-public union DeleteToDoListResult(Success, EntityNotFoundError);
+public union DeleteToDoListResult(Success, EntityNotFoundError, EntityBelongToOtherUserError);
