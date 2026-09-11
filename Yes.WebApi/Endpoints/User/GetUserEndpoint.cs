@@ -4,22 +4,23 @@ using Yes.Shared.Services;
 
 namespace Yes.WebApi.Endpoints.User;
 
-public static class GetUserByIdEndpoint
+public static class GetUserEndpoint
 {
     extension(IEndpointRouteBuilder routeBuilder)
     {
-        public IEndpointRouteBuilder MapGetUserByIdEndpoint()
+        public IEndpointRouteBuilder MapGetUserEndpoint()
         {
-            routeBuilder.MapGet("{id:guid}", async (IUserService service, Guid id) =>
+            routeBuilder.MapGet("", async (IUserService service) =>
             {
-                var result = await service.GetByIdAsync(id);
+                var result = await service.GetAsync();
 
                 return result switch
                 {
                     UserResponse response => Results.Ok(response),
                     EntityNotFoundError entityNotFoundError => Results.NotFound(entityNotFoundError)
                 };
-            }).WithName("GetUserById");
+            }).RequireAuthorization()
+                .WithName("GetUser");
 
             return routeBuilder;
         }

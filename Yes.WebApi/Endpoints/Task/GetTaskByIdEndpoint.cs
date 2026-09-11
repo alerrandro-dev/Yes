@@ -19,7 +19,8 @@ public static class GetTaskByIdEndpoint
                     TaskResponse response => Results.Ok(response),
                     EntityNotFoundError entityNotFoundError => Results.NotFound(entityNotFoundError)
                 };
-            }).WithName("GetTaskById");
+            }).RequireAuthorization()
+                .WithName("GetTaskById");
 
             return routeBuilder;
         }

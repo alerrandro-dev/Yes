@@ -4,13 +4,13 @@ using Yes.Shared.Validators.ToDoList;
 
 namespace Yes.WebApi.DependencyInjections.ToDoList;
 
-public static class UpdateToDoListValidatorDependencyInjection
+public static class FullUpdateToDoListValidatorDependencyInjection
 {
     extension(IServiceCollection services)
     {
-        public IServiceCollection AddUpdateToDoListValidatorDependencyInjection()
+        public IServiceCollection AddFullUpdateToDoListValidatorDependencyInjection()
         {
-            services.AddScoped<IValidator<UpdateToDoListRequest>, UpdateToDoListValidator>();
+            services.AddScoped<IValidator<UpdateToDoListRequest>, FullUpdateToDoListValidator>();
 
             return services;
         }

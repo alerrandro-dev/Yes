@@ -23,7 +23,8 @@ public static class AddTaskEndpoint
                     EntityNotFoundError entityNotFoundError => Results.NotFound(entityNotFoundError),
                     EntityFromOwnerEntityAlreadyExistsError entityFromOwnerEntityAlreadyExistsError => Results.BadRequest(entityFromOwnerEntityAlreadyExistsError)
                 };
-            }).WithName("AddTask");
+            }).RequireAuthorization()
+                .WithName("AddTask");
 
             return routeBuilder;
         }

@@ -19,7 +19,8 @@ public static class DeleteToDoListByIdEndpoint
                     Success success => Results.NoContent(),
                     EntityNotFoundError entityNotFoundError => Results.NotFound(entityNotFoundError)
                 };
-            }).WithName("DeleteToDoListById");
+            }).RequireAuthorization()
+                .WithName("DeleteToDoListById");
 
             return routeBuilder;
         }

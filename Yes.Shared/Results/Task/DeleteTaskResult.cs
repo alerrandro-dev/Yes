@@ -2,4 +2,4 @@
 
 namespace Yes.Shared.Results.Task;
 
-public union DeleteTaskResult(Success, EntityNotFoundError);
+public union DeleteTaskResult(Success, EntityNotFoundError, EntityBelongToOtherUserError);

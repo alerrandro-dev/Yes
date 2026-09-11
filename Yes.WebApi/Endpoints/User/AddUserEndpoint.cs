@@ -18,11 +18,12 @@ public static class AddUserEndpoint
 
                 return result switch
                 {
-                    UserResponse response => Results.CreatedAtRoute("GetUserById", new { id = response.Id }, response),
+                    UserResponse response => Results.CreatedAtRoute("GetUser", value: response),
                     ValidationError validationError => Results.BadRequest(validationError),
                     EntityAlreadyExistsError entityAlreadyExistsError => Results.BadRequest(entityAlreadyExistsError)
                 };
-            }).WithName("AddUser");
+            }).RequireAuthorization()
+                .WithName("AddUser");
 
             return routeBuilder;
         }

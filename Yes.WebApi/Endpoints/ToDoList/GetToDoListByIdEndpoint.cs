@@ -19,7 +19,8 @@ public static class GetToDoListByIdEndpoint
                     ToDoListResponse response => Results.Ok(response),
                     EntityNotFoundError entityNotFoundError => Results.NotFound(entityNotFoundError)
                 };
-            }).WithName("GetToDoListById");
+            }).RequireAuthorization()
+                .WithName("GetToDoListById");
 
             return routeBuilder;
         }

@@ -6,15 +6,15 @@ using Yes.Shared.Services;
 
 namespace Yes.WebApi.Endpoints.User;
 
-public static class UpdateUserByIdEndpoint
+public static class PartialUpdateUserEndpoint
 {
     extension(IEndpointRouteBuilder routeBuilder)
     {
-        public IEndpointRouteBuilder MapUpdateUserByIdEndpoint()
+        public IEndpointRouteBuilder MapPartialUpdateUserEndpoint()
         {
-            routeBuilder.MapPut("{id:guid}", async (IUserService service, Guid id, UpdateUserRequest request) =>
+            routeBuilder.MapPatch("", async (IUserService service, UpdateUserRequest request) =>
             {
-                var result = await service.UpdateByIdAsync(id, request);
+                var result = await service.PartialUpdateAsync(request);
 
                 return result switch
                 {
@@ -23,7 +23,8 @@ public static class UpdateUserByIdEndpoint
                     EntityNotFoundError entityNotFoundError => Results.NotFound(entityNotFoundError),
                     EntityAlreadyExistsError entityAlreadyExistsError => Results.BadRequest(entityAlreadyExistsError)
                 };
-            }).WithName("UpdateUserById");
+            }).RequireAuthorization()
+                .WithName("PartialUpdateUser");
 
             return routeBuilder;
         }

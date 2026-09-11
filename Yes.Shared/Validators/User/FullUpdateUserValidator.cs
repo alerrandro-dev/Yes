@@ -5,9 +5,9 @@ using Yes.Shared.Requests.User;
 
 namespace Yes.Shared.Validators.User;
 
-public class UpdateUserValidator : AbstractValidator<UpdateUserRequest>
+public class FullUpdateUserValidator : AbstractValidator<UpdateUserRequest>
 {
-    public UpdateUserValidator()
+    public FullUpdateUserValidator()
     {
         RuleFor(r => r.Username)
             .NotEmpty().WithError(new FieldIsRequiredError(nameof(UpdateUserRequest.Username)))

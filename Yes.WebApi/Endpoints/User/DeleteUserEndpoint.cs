@@ -4,22 +4,23 @@ using Yes.Shared.Services;
 
 namespace Yes.WebApi.Endpoints.User;
 
-public static class DeleteUserByIdEndpoint
+public static class DeleteUserEndpoint
 {
     extension(IEndpointRouteBuilder routeBuilder)
     {
-        public IEndpointRouteBuilder MapDeleteUserByIdEndpoint()
+        public IEndpointRouteBuilder MapDeleteUserEndpoint()
         {
-            routeBuilder.MapDelete("{id:guid}", async (IUserService service, Guid id) =>
+            routeBuilder.MapDelete("", async (IUserService service) =>
             {
-                var result = await service.DeleteByIdAsync(id);
+                var result = await service.DeleteAsync();
 
                 return result switch
                 {
                     Success success => Results.NoContent(),
                     EntityNotFoundError entityNotFoundError => Results.NotFound(entityNotFoundError)
                 };
-            }).WithName("DeleteUserById");
+            }).RequireAuthorization()
+                .WithName("DeleteUser");
 
             return routeBuilder;
         }

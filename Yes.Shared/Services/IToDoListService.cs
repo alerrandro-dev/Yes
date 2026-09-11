@@ -7,6 +7,6 @@ public interface IToDoListService
 {
     Task<AddToDoListResult> AddAsync(AddToDoListRequest request);
     Task<GetToDoListResult> GetByIdAsync(Guid id);
-    Task<UpdateToDoListResult> UpdateByIdAsync(Guid id, UpdateToDoListRequest request);
+    Task<UpdateToDoListResult> FullUpdateByIdAsync(Guid id, UpdateToDoListRequest request);
     Task<DeleteToDoListResult> DeleteByIdAsync(Guid id);
 }
