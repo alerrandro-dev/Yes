@@ -59,6 +59,16 @@ builder.Services.AddOpenApi(options =>
     });
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Blazor", policy =>
+    {
+        policy.WithOrigins("http://localhost:5062");
+        policy.AllowAnyMethod();
+        policy.AllowAnyHeader();
+    });
+});
+
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddUserRepositoryDependencyInjection()
@@ -66,7 +76,8 @@ builder.Services.AddUserRepositoryDependencyInjection()
     .AddAddUserValidatorDependencyInjection()
     .AddFullUpdateUserValidatorDependencyInjection()
     .AddPartialUpdateUserValidatorDependencyInjection()
-    .AddUserContextDependencyInjection();
+    .AddUserContextDependencyInjection()
+    .AddUpdateUserRequestToUserEntityTypeAdapterConfigDependencyInjection();
 
 builder.Services.AddToDoListRepositoryDependencyInjection()
     .AddToDoListServiceDependencyInjection()
@@ -77,7 +88,8 @@ builder.Services.AddTaskRepositoryDependencyInjection()
     .AddTaskServiceDependencyInjection()
     .AddAddTaskValidatorDependencyInjection()
     .AddFullUpdateTaskValidatorDependencyInjection()
-    .AddPartialUpdateTaskValidatorDependencyInjection();
+    .AddPartialUpdateTaskValidatorDependencyInjection()
+    .AddUpdateTaskRequestToTaskEntityTypeAdapterConfigDependencyInjection();
 
 builder.Services.AddAuthenticationServiceDependencyInjection()
     .AddRegisterValidatorDependencyInjection()
@@ -88,6 +100,8 @@ builder.Services.AddTokenProviderServiceDependencyInjection();
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionHandlerMiddleware>();
+
+app.UseCors("Blazor");
 
 app.UseAuthentication();
 app.UseAuthorization();

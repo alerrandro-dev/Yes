@@ -4,4 +4,5 @@
   <Project Path="Yes.Infrastructure/Yes.Infrastructure.csproj" />
   <Project Path="Yes.Shared/Yes.Shared.csproj" />
   <Project Path="Yes.WebApi/Yes.WebApi.csproj" />
+  <Project Path="Yes.WebApp/Yes.WebApp.csproj" Id="5df2573a-454a-4b58-a0cf-28e5eb2daaf3" />
 </Solution>
