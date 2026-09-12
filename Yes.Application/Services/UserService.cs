@@ -16,9 +16,15 @@ using Yes.Shared.Services;
 namespace Yes.Application.Services;
 
 public class UserService(IUserRepository repository, IUserContext context, IValidator<AddUserRequest> addValidator,
-    [FromKeyedServices("FullUpdateUserValidator")] IValidator<UpdateUserRequest> fullUpdateValidator,
-    [FromKeyedServices("PartialUpdateUserValidator")] IValidator<UpdateUserRequest> partialUpdateValidator) : IUserService
+    IServiceProvider serviceProvider) : IUserService
 {
+    private IValidator<UpdateUserRequest> _fullUpdateValidator => serviceProvider
+        .GetRequiredKeyedService<IValidator<UpdateUserRequest>>("FullUpdateUserValidator");
+    private IValidator<UpdateUserRequest> _partialUpdateValidator => serviceProvider
+        .GetRequiredKeyedService<IValidator<UpdateUserRequest>>("PartialUpdateUserValidator");
+    private TypeAdapterConfig _typeAdapterConfig => serviceProvider
+        .GetRequiredKeyedService<TypeAdapterConfig>("UpdateUserRequestToUserEntityTypeAdapterConfig");
+
     public async Task<AddUserResult> AddAsync(AddUserRequest request)
     {
         var validationResult = await addValidator.ValidateAsync(request);
@@ -38,7 +44,7 @@ public class UserService(IUserRepository repository, IUserContext context, IVali
 
     public async Task<UpdateUserResult> FullUpdateAsync(UpdateUserRequest request)
     {
-        var validationResult = await fullUpdateValidator.ValidateAsync(request);
+        var validationResult = await _fullUpdateValidator.ValidateAsync(request);
         if (!validationResult.IsValid) return new ValidationError(validationResult.ErrorsToStringArray());
 
         var entity = await repository.GetByIdAsync(context.Id);
@@ -73,7 +79,7 @@ public class UserService(IUserRepository repository, IUserContext context, IVali
 
     public async Task<UpdateUserResult> PartialUpdateAsync(UpdateUserRequest request)
     {
-        var validationResult = await partialUpdateValidator.ValidateAsync(request);
+        var validationResult = await _partialUpdateValidator.ValidateAsync(request);
         if (!validationResult.IsValid) return new ValidationError(validationResult.ErrorsToStringArray());
 
         var entity = await repository.GetByIdAsync(context.Id);
@@ -85,11 +91,7 @@ public class UserService(IUserRepository repository, IUserContext context, IVali
             if (existsWithEmail) return new EntityAlreadyExistsError(nameof(UserEntity), nameof(UserEntity.Email), request.Email);
         }
 
-        var typeAdapterConfig = new TypeAdapterConfig();
-        typeAdapterConfig.NewConfig<UpdateUserRequest, UserEntity>()
-            .IgnoreNullValues(true);
-
-        request.Adapt(entity, typeAdapterConfig);
+        request.Adapt(entity, _typeAdapterConfig);
         await repository.SaveChangesAsync();
 
         var response = entity.Adapt<UserResponse>();

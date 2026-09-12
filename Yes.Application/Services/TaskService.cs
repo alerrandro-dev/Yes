@@ -16,9 +16,15 @@ using Yes.Shared.Services;
 namespace Yes.Application.Services;
 
 public class TaskService(ITaskRepository repository, IToDoListRepository toDoListRepository, IUserContext userContext,
-    IValidator<AddTaskRequest> addValidator, [FromKeyedServices("FullUpdateTaskValidator")] IValidator<UpdateTaskRequest> fullUpdateValidator,
-    [FromKeyedServices("PartialUpdateTaskValidator")] IValidator<UpdateTaskRequest> partialUpdateValidator) : ITaskService
+    IValidator<AddTaskRequest> addValidator, IServiceProvider serviceProvider) : ITaskService
 {
+    private IValidator<UpdateTaskRequest> _fullUpdateValidator => serviceProvider
+        .GetRequiredKeyedService<IValidator<UpdateTaskRequest>>("FullUpdateTaskValidator");
+    private IValidator<UpdateTaskRequest> _partialUpdateValidator => serviceProvider
+        .GetRequiredKeyedService<IValidator<UpdateTaskRequest>>("PartialUpdateTaskValidator");
+    private TypeAdapterConfig _typeAdapterConfig => serviceProvider
+        .GetRequiredKeyedService<TypeAdapterConfig>("UpdateTaskRequestToTaskEntityTypeAdapterConfig");
+
     public async Task<AddTaskResult> AddAsync(AddTaskRequest request)
     {
         var validationResult = await addValidator.ValidateAsync(request);
@@ -71,7 +77,7 @@ public class TaskService(ITaskRepository repository, IToDoListRepository toDoLis
 
     public async Task<UpdateTaskResult> FullUpdateByIdAsync(Guid id, UpdateTaskRequest request)
     {
-        var validationResult = await fullUpdateValidator.ValidateAsync(request);
+        var validationResult = await _fullUpdateValidator.ValidateAsync(request);
         if (!validationResult.IsValid) return new ValidationError(validationResult.ErrorsToStringArray());
 
         var entity = await repository.GetByIdAsync(id);
@@ -94,7 +100,7 @@ public class TaskService(ITaskRepository repository, IToDoListRepository toDoLis
 
     public async Task<UpdateTaskResult> PartialUpdateByIdAsync(Guid id, UpdateTaskRequest request)
     {
-        var validationResult = await partialUpdateValidator.ValidateAsync(request);
+        var validationResult = await _partialUpdateValidator.ValidateAsync(request);
         if (!validationResult.IsValid) return new ValidationError(validationResult.ErrorsToStringArray());
 
         var entity = await repository.GetByIdAsync(id);
@@ -111,11 +117,7 @@ public class TaskService(ITaskRepository repository, IToDoListRepository toDoLis
                 nameof(ToDoListEntity), nameof(ToDoListEntity.Id), entity.ToDoListId);
         }
 
-        var typeAdapterConfig = new TypeAdapterConfig();
-        typeAdapterConfig.NewConfig<UpdateTaskRequest, TaskEntity>()
-            .IgnoreNullValues(true);
-
-        request.Adapt(entity, typeAdapterConfig);
+        request.Adapt(entity, _typeAdapterConfig);
         await repository.SaveChangesAsync();
 
         var response = entity.Adapt<TaskResponse>();
