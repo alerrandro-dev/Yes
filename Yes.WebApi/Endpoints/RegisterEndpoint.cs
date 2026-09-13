@@ -18,7 +18,7 @@ public static class RegisterEndpoint
 
                 return result switch
                 {
-                    RegisterResponse response => Results.CreatedAtRoute("GetUserById", new { id = response.Id }, response),
+                    RegisterResponse response => Results.CreatedAtRoute("GetUser", value: response),
                     ValidationError validationError => Results.BadRequest(validationError),
                     EntityAlreadyExistsError entityAlreadyExistsError => Results.BadRequest(entityAlreadyExistsError)
                 };

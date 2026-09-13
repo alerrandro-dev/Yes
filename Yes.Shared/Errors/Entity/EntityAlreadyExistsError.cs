@@ -1,3 +1,3 @@
 ﻿namespace Yes.Shared.Errors.Entity;
 
-public record EntityAlreadyExistsError(string entity, string field, object value) : Error($"{entity} with {field}: {value} already exists");
+public record EntityAlreadyExistsError(string Entity, string Field, object Value) : Error($"{Entity} with {Field}: {Value} already exists");

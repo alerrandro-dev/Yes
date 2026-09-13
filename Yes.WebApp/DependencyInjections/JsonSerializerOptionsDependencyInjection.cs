@@ -12,6 +12,7 @@ public static class JsonSerializerOptionsDependencyInjection
             var options = new JsonSerializerOptions();
             var jsonUnionTypeStructuralClassifier = new JsonUnionTypeStructuralClassifier();
             options.TypeClassifiers.Add(jsonUnionTypeStructuralClassifier);
+            options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
 
             services.AddSingleton(options);
 

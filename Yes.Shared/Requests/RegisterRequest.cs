@@ -1,3 +1,8 @@
 ﻿namespace Yes.Shared.Requests;
 
-public record RegisterRequest(string? Username, string? Email, string? Password);
+public record RegisterRequest
+{
+    public string? Username { get; set; } = string.Empty;
+    public string? Email { get; set; } = string.Empty;
+    public string? Password { get; set; } = string.Empty;
+}
