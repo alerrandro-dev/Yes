@@ -8,9 +8,16 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddMudServices();
+builder.Services.AddMudServices(configuration =>
+{
+    configuration.SnackbarConfiguration.PreventDuplicates = true;
+    configuration.SnackbarConfiguration.MaxDisplayedSnackbars = 6;
+    configuration.SnackbarConfiguration.ShowTransitionDuration = 500;
+    configuration.SnackbarConfiguration.HideTransitionDuration = 500;
+});
 
-builder.Services.AddAuthenticationServiceDependencyInjection();
+builder.Services.AddAuthenticationServiceDependencyInjection()
+    .AddRegisterValidatorDependencyInjection();
 
 builder.Services.AddJsonSerializerOptionsDependencyInjection();
 

@@ -1,3 +1,3 @@
 ﻿namespace Yes.Shared.Errors.Field;
 
-public record FieldIsRequiredError(string field) : Error($"{field} is required");
+public record FieldIsRequiredError(string Field) : Error($"{Field} is required");

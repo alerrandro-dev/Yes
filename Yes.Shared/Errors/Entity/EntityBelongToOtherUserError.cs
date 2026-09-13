@@ -1,3 +1,3 @@
 ﻿namespace Yes.Shared.Errors.Entity;
 
-public record EntityBelongToOtherUserError(string entity, string field, object value) : Error($"{entity} with {field}: {value} belong to other user");
+public record EntityBelongToOtherUserError(string Entity, string Field, object Value) : Error($"{Entity} with {Field}: {Value} belong to other user");
