@@ -29,6 +29,13 @@ builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"))
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+        options.Events.OnMessageReceived = context =>
+        {
+            context.Token = context.Request.Cookies["authentication"];
+
+            return Task.CompletedTask;
+        };
+
         var jwtOptions = builder.Services.BuildServiceProvider().GetRequiredService<IOptions<JwtSettings>>().Value;
 
         options.TokenValidationParameters = new()
@@ -96,6 +103,8 @@ builder.Services.AddAuthenticationServiceDependencyInjection()
     .AddLoginValidatorDependencyInjection();
 
 builder.Services.AddTokenProviderServiceDependencyInjection();
+
+builder.Services.AddCookieServiceDependencyInjection();
 
 var app = builder.Build();
 

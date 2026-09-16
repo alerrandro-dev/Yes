@@ -9,9 +9,9 @@ using Yes.Shared.Services;
 
 namespace Yes.WebApp.Pages;
 
-public partial class Register(IAuthenticationService authenticationService, ISnackbar snackbar, IValidator<RegisterRequest> validator)
+public partial class LoginPage(IAuthenticationService authenticationService, ISnackbar snackbar, IValidator<LoginRequest> validator)
 {
-    private RegisterRequest _request = new();
+    private LoginRequest _request = new();
 
     private async Task EnterAsync()
     {
@@ -26,17 +26,20 @@ public partial class Register(IAuthenticationService authenticationService, ISna
             return;
         }
 
-        var result = await authenticationService.RegisterAsync(_request);
+        var result = await authenticationService.LoginAsync(_request);
         switch (result)
         {
-            case RegisterResponse response:
-                snackbar.Add($"You are registered, {response.Username}", MudBlazor.Severity.Success);
+            case LoginResponse response:
+                snackbar.Add($"Welcome to Yes", MudBlazor.Severity.Success);
                 break;
             case ValidationError validationError:
                 foreach (var error in validationError.Errors) snackbar.Add(error, MudBlazor.Severity.Error, options => options.RequireInteraction = true);
                 break;
-            case EntityAlreadyExistsError entityAlreadyExistsError:
-                snackbar.Add(entityAlreadyExistsError.Message, MudBlazor.Severity.Error, options => options.RequireInteraction = true);
+            case EntityNotFoundError entityNotFoundError:
+                snackbar.Add(entityNotFoundError.Message, MudBlazor.Severity.Error, options => options.RequireInteraction = true);
+                break;
+            case IncorrectPasswordError incorrectPasswordError:
+                snackbar.Add(incorrectPasswordError.Message, MudBlazor.Severity.Error, options => options.RequireInteraction = true);
                 break;
         }
     }
