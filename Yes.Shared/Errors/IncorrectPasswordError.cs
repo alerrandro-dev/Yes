@@ -1,3 +1,3 @@
 ﻿namespace Yes.Shared.Errors;
 
-public record IncorrectPasswordError() : Error("Incorrect password");
+public record IncorrectPasswordError(string password) : Error($"Password: {password} is incorrect");

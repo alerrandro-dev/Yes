@@ -23,7 +23,7 @@ public class AuthenticationService(IUserRepository userRepository, TokenProvider
         if (entity is null) return new EntityNotFoundError(nameof(UserEntity), nameof(UserEntity.Email), request.Email);
 
         var correctPassword = entity.Password == request.Password;
-        if (!correctPassword) return new IncorrectPasswordError();
+        if (!correctPassword) return new IncorrectPasswordError(request.Password);
 
         var token = tokenProviderService.ProvideToken(entity.Id);
 

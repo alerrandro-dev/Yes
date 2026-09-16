@@ -17,7 +17,8 @@ builder.Services.AddMudServices(configuration =>
 });
 
 builder.Services.AddAuthenticationServiceDependencyInjection()
-    .AddRegisterValidatorDependencyInjection();
+    .AddRegisterValidatorDependencyInjection()
+    .AddLoginValidatorDependencyInjection();
 
 builder.Services.AddJsonSerializerOptionsDependencyInjection();
 

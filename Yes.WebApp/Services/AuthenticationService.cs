@@ -9,7 +9,10 @@ public class AuthenticationService(HttpClient httpClient, JsonSerializerOptions 
 {
     public async Task<LoginResult> LoginAsync(LoginRequest request)
     {
-        throw new NotImplementedException();
+        var httpResponse = await httpClient.PostAsJsonAsync("authentication/login", request);
+
+        var result = await httpResponse.Content.ReadFromJsonAsync<LoginResult>(jsonSerializerOptions);
+        return result;
     }
 
     public async Task<ResgisterResult> RegisterAsync(RegisterRequest request)
