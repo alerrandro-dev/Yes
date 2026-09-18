@@ -1,4 +1,5 @@
 using FluentValidation;
+using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Yes.Shared.Errors;
 using Yes.Shared.Errors.Entity;
@@ -9,7 +10,7 @@ using Yes.Shared.Services;
 
 namespace Yes.WebApp.Pages;
 
-public partial class LoginPage(IAuthenticationService authenticationService, ISnackbar snackbar, IValidator<LoginRequest> validator)
+public partial class LoginPage(IAuthenticationService authenticationService, NavigationManager navigationManager, ISnackbar snackbar, IValidator<LoginRequest> validator)
 {
     private LoginRequest _request = new();
 
@@ -31,6 +32,7 @@ public partial class LoginPage(IAuthenticationService authenticationService, ISn
         {
             case LoginResponse response:
                 snackbar.Add($"Welcome to Yes", MudBlazor.Severity.Success);
+                navigationManager.NavigateTo("/home");
                 break;
             case ValidationError validationError:
                 foreach (var error in validationError.Errors) snackbar.Add(error, MudBlazor.Severity.Error, options => options.RequireInteraction = true);

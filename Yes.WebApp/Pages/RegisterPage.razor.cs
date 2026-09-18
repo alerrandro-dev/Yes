@@ -1,4 +1,5 @@
 using FluentValidation;
+using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Yes.Shared.Errors;
 using Yes.Shared.Errors.Entity;
@@ -9,7 +10,7 @@ using Yes.Shared.Services;
 
 namespace Yes.WebApp.Pages;
 
-public partial class Register(IAuthenticationService authenticationService, ISnackbar snackbar, IValidator<RegisterRequest> validator)
+public partial class RegisterPage(IAuthenticationService authenticationService, NavigationManager navigationManager, ISnackbar snackbar, IValidator<RegisterRequest> validator)
 {
     private RegisterRequest _request = new();
 
@@ -31,6 +32,7 @@ public partial class Register(IAuthenticationService authenticationService, ISna
         {
             case RegisterResponse response:
                 snackbar.Add($"You are registered, {response.Username}", MudBlazor.Severity.Success);
+                navigationManager.NavigateTo("/login");
                 break;
             case ValidationError validationError:
                 foreach (var error in validationError.Errors) snackbar.Add(error, MudBlazor.Severity.Error, options => options.RequireInteraction = true);

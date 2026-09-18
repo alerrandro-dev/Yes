@@ -1,3 +1,15 @@
 ﻿@inherits LayoutComponentBase
 
-@Body
+<MudLayout>
+    <MudAppBar>
+        <MudIconButton OnClick="ChangeDrawerOpeningState" Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" />
+        <MudSpacer />
+        <MudText Typo="Typo.h4">Yes</MudText>
+    </MudAppBar>
+    <MudDrawer @bind-Open="_drawerIsOpened" Color="Color.Primary">
+        
+    </MudDrawer>
+    <MudMainContent Style="min-height: 100vh" Class="d-flex justify-center align-center">
+        @Body
+    </MudMainContent>
+</MudLayout>

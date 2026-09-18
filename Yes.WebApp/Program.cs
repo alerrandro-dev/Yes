@@ -22,6 +22,8 @@ builder.Services.AddAuthenticationServiceDependencyInjection()
 
 builder.Services.AddJsonSerializerOptionsDependencyInjection();
 
+builder.Services.AddUserServiceDependencyInjection();
+
 var httpClient = new HttpClient();
 var uri = new Uri("http://localhost:5200/api/");
 httpClient.BaseAddress = uri;
