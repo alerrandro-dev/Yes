@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
 using Yes.WebApp;
 using Yes.WebApp.DependencyInjections;
+using Yes.WebApp.DependencyInjections.User;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -22,12 +23,10 @@ builder.Services.AddAuthenticationServiceDependencyInjection()
 
 builder.Services.AddJsonSerializerOptionsDependencyInjection();
 
-builder.Services.AddUserServiceDependencyInjection();
+builder.Services.AddUserServiceDependencyInjection()
+    .AddUserContextDependencyInjection();
 
-var httpClient = new HttpClient();
-var uri = new Uri("http://localhost:5200/api/");
-httpClient.BaseAddress = uri;
+builder.Services.AddHttpClientDependencyInjection();
 
-builder.Services.AddSingleton(httpClient);
-
-await builder.Build().RunAsync();
+var app = builder.Build();
+await app.RunAsync();

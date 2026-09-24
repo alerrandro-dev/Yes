@@ -1,6 +1,7 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using Yes.Shared.Contexts;
 using Yes.Shared.Errors;
 using Yes.Shared.Errors.Entity;
 using Yes.Shared.Extensions.Validator;
@@ -10,7 +11,8 @@ using Yes.Shared.Services;
 
 namespace Yes.WebApp.Pages;
 
-public partial class LoginPage(IAuthenticationService authenticationService, NavigationManager navigationManager, ISnackbar snackbar, IValidator<LoginRequest> validator)
+public partial class LoginPage(IAuthenticationService authenticationService, IUserService userService, IUserContext userContext,
+    NavigationManager navigationManager, ISnackbar snackbar, IValidator<LoginRequest> validator)
 {
     private LoginRequest _request = new();
 
@@ -32,6 +34,9 @@ public partial class LoginPage(IAuthenticationService authenticationService, Nav
         {
             case LoginResponse response:
                 snackbar.Add($"Welcome to Yes", MudBlazor.Severity.Success);
+
+                await SetUserProperties();
+
                 navigationManager.NavigateTo("/home");
                 break;
             case ValidationError validationError:
@@ -42,6 +47,21 @@ public partial class LoginPage(IAuthenticationService authenticationService, Nav
                 break;
             case IncorrectPasswordError incorrectPasswordError:
                 snackbar.Add(incorrectPasswordError.Message, MudBlazor.Severity.Error, options => options.RequireInteraction = true);
+                break;
+        }
+    }
+
+    private async Task SetUserProperties()
+    {
+        var result = await userService.GetAsync();
+        switch (result)
+        {
+            case UserResponse response:
+                userContext.Id = response.Id;
+                userContext.Response = response;
+                break;
+            case EntityNotFoundError entityNotFoundError:
+                snackbar.Add(entityNotFoundError.Message, MudBlazor.Severity.Error, options => options.RequireInteraction = true);
                 break;
         }
     }

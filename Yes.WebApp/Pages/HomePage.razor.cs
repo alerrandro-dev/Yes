@@ -1,26 +1,26 @@
-﻿using MudBlazor;
+﻿using Microsoft.AspNetCore.Components;
+using MudBlazor;
+using Yes.Shared.Contexts;
 using Yes.Shared.Errors.Entity;
 using Yes.Shared.Responses;
 using Yes.Shared.Services;
 
 namespace Yes.WebApp.Pages;
 
-public partial class HomePage(IUserService userService, ISnackbar snackbar)
+public partial class HomePage(IUserContext userContext, NavigationManager navigationManager, ISnackbar snackbar)
 {
     private UserResponse? _userResponse;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        var result = await userService.GetAsync();
-
-        switch (result)
+        if (userContext.Response is null)
         {
-            case UserResponse userResponse:
-                _userResponse = userResponse;
-                break;
-            case EntityNotFoundError entityNotFoundError:
-                snackbar.Add(entityNotFoundError.Message, Severity.Error, options => options.RequireInteraction = true);
-                break;
+            snackbar.Add("You didn't login", Severity.Error, options => options.RequireInteraction = true);
+
+            navigationManager.NavigateTo("/login");
+            return;
         }
+
+        _userResponse = userContext.Response;
     }
 }
