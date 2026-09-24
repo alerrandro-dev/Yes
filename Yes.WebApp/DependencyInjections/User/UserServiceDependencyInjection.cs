@@ -1,7 +1,7 @@
 ﻿using Yes.Shared.Services;
 using Yes.WebApp.Services;
 
-namespace Yes.WebApp.DependencyInjections;
+namespace Yes.WebApp.DependencyInjections.User;
 
 public static class UserServiceDependencyInjection
 {
