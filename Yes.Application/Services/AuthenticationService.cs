@@ -25,7 +25,7 @@ public class AuthenticationService(IUserRepository userRepository, TokenProvider
         var correctPassword = entity.Password == request.Password;
         if (!correctPassword) return new IncorrectPasswordError(request.Password);
 
-        var token = tokenProviderService.ProvideToken(entity.Id);
+        var token = tokenProviderService.ProvideToken(entity);
 
         var response = new LoginResponse(token);
         return response;

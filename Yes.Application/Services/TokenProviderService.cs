@@ -3,17 +3,20 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Yes.Domain.Entities;
 using Yes.Shared.Settings;
 
 namespace Yes.Application.Services;
 
 public class TokenProviderService(IOptions<JwtSettings> jwtOptions)
 {
-    public string ProvideToken(Guid id)
+    public string ProvideToken(UserEntity userEntity)
     {
         var claims = new[]
         {
-            new Claim(ClaimTypes.NameIdentifier, id.ToString())
+            new Claim(ClaimTypes.NameIdentifier, userEntity.Id.ToString()),
+            new Claim(ClaimTypes.Name, userEntity.Username),
+            new Claim(ClaimTypes.Email, userEntity.Email)
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Value.Key));

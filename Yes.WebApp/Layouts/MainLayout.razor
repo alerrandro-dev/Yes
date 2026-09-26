@@ -7,7 +7,10 @@
         <MudText Typo="Typo.h4">Yes</MudText>
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerIsOpened" Color="Color.Primary">
-        
+        <MudNavMenu>
+            <MudNavLink Icon="@Icons.Material.Filled.Home" IconColor="Color.Inherit" Href="/home">Home</MudNavLink>
+            <MudNavLink Icon="@Icons.Material.Filled.Person" IconColor="Color.Inherit"  Href="users/details">User details</MudNavLink>
+        </MudNavMenu>
     </MudDrawer>
     <MudMainContent Style="min-height: 100vh" Class="d-flex justify-center align-center">
         @Body

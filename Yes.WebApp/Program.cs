@@ -4,6 +4,7 @@ using MudBlazor.Services;
 using Yes.WebApp;
 using Yes.WebApp.DependencyInjections;
 using Yes.WebApp.DependencyInjections.User;
+using Yes.WebApp.Handlers;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -26,7 +27,13 @@ builder.Services.AddJsonSerializerOptionsDependencyInjection();
 builder.Services.AddUserServiceDependencyInjection()
     .AddUserContextDependencyInjection();
 
-builder.Services.AddHttpClientDependencyInjection();
+builder.Services.AddBrowserCredentialsHandlerDependencyInjection();
+
+builder.Services.AddHttpClient("Api", client =>
+{
+    var uri = new Uri("http://localhost:5200/api/");
+    client.BaseAddress = uri;
+}).AddHttpMessageHandler<BrowserCredentialsHandler>();
 
 var app = builder.Build();
 await app.RunAsync();
