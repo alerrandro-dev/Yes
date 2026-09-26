@@ -8,6 +8,7 @@ using Yes.Shared.Extensions.Validator;
 using Yes.Shared.Requests;
 using Yes.Shared.Responses;
 using Yes.Shared.Services;
+using Mapster;
 
 namespace Yes.WebApp.Pages;
 
@@ -20,14 +21,7 @@ public partial class LoginPage(IAuthenticationService authenticationService, IUs
     {
         snackbar.Clear();
 
-        var validationResult = await validator.ValidateAsync(_request);
-        if (!validationResult.IsValid)
-        {
-            var errors = validationResult.ErrorsToStringArray();
-            foreach (var error in errors) snackbar.Add(error, MudBlazor.Severity.Error, options => options.RequireInteraction = true);
-
-            return;
-        }
+        await ValidateLoginRequestBeforeSendingRequest();
 
         var result = await authenticationService.LoginAsync(_request);
         switch (result)
@@ -35,7 +29,7 @@ public partial class LoginPage(IAuthenticationService authenticationService, IUs
             case LoginResponse response:
                 snackbar.Add($"Welcome to Yes", MudBlazor.Severity.Success);
 
-                await SetUserProperties();
+                await SetUserContextProperties();
 
                 navigationManager.NavigateTo("/home");
                 break;
@@ -51,14 +45,24 @@ public partial class LoginPage(IAuthenticationService authenticationService, IUs
         }
     }
 
-    private async Task SetUserProperties()
+    private async Task ValidateLoginRequestBeforeSendingRequest()
+    {
+        var validationResult = await validator.ValidateAsync(_request);
+        if (!validationResult.IsValid)
+        {
+            var errors = validationResult.ErrorsToStringArray();
+            foreach (var error in errors) snackbar.Add(error, MudBlazor.Severity.Error, options => options.RequireInteraction = true);
+        }
+    }
+
+    private async Task SetUserContextProperties()
     {
         var result = await userService.GetAsync();
         switch (result)
         {
             case UserResponse response:
-                userContext.Id = response.Id;
-                userContext.Response = response;
+                response.Adapt(userContext);
+                userContext.IsAuthenticated = true;
                 break;
             case EntityNotFoundError entityNotFoundError:
                 snackbar.Add(entityNotFoundError.Message, MudBlazor.Severity.Error, options => options.RequireInteraction = true);

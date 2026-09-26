@@ -6,8 +6,10 @@ using Yes.Shared.Services;
 
 namespace Yes.WebApp.Services;
 
-public class UserService(HttpClient httpClient, JsonSerializerOptions jsonSerializerOptions) : IUserService
+public class UserService(IHttpClientFactory httpClientFactory, JsonSerializerOptions jsonSerializerOptions) : IUserService
 {
+    private HttpClient _httpClient = httpClientFactory.CreateClient("Api");
+
     public async Task<AddUserResult> AddAsync(AddUserRequest request)
     {
         throw new NotImplementedException();
@@ -15,12 +17,7 @@ public class UserService(HttpClient httpClient, JsonSerializerOptions jsonSerial
 
     public async Task<GetUserResult> GetAsync()
     {
-        var httpRequest = new HttpRequestMessage(HttpMethod.Get, "users");
-        httpRequest.SetBrowserRequestCredentials(BrowserRequestCredentials.Include);
-        
-        var httpResponse = await httpClient.SendAsync(httpRequest);
-        
-        var result = await httpResponse.Content.ReadFromJsonAsync<GetUserResult>(jsonSerializerOptions);
+        var result = await _httpClient.GetFromJsonAsync<GetUserResult>("users", jsonSerializerOptions);
         return result;
     }
 
