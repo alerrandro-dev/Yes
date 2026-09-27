@@ -27,13 +27,15 @@ builder.Services.AddJsonSerializerOptionsDependencyInjection();
 builder.Services.AddUserServiceDependencyInjection()
     .AddUserContextDependencyInjection();
 
-builder.Services.AddBrowserCredentialsHandlerDependencyInjection();
+builder.Services.AddBrowserCredentialsHandlerDependencyInjection()
+    .AddUnauthorizedHandlerDependencyInjection();
 
 builder.Services.AddHttpClient("Api", client =>
 {
     var uri = new Uri("http://localhost:5200/api/");
     client.BaseAddress = uri;
-}).AddHttpMessageHandler<BrowserCredentialsHandler>();
+}).AddHttpMessageHandler<BrowserCredentialsHandler>()
+    .AddHttpMessageHandler<UnauthorizedHandler>();
 
 var app = builder.Build();
 await app.RunAsync();

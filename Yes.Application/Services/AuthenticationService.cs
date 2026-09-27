@@ -12,7 +12,8 @@ using Yes.Shared.Services;
 
 namespace Yes.Application.Services;
 
-public class AuthenticationService(IUserRepository userRepository, TokenProviderService tokenProviderService, IValidator<RegisterRequest> registerValidator, IValidator<LoginRequest> loginValidator) : IAuthenticationService
+public class AuthenticationService(IUserRepository userRepository, TokenProviderService tokenProviderService, 
+    IValidator<RegisterRequest> registerValidator, IValidator<LoginRequest> loginValidator) : IAuthenticationService
 {
     public async Task<LoginResult> LoginAsync(LoginRequest request)
     {
