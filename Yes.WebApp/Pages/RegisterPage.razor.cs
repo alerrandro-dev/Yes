@@ -7,10 +7,12 @@ using Yes.Shared.Extensions.Validator;
 using Yes.Shared.Requests;
 using Yes.Shared.Responses;
 using Yes.Shared.Services;
+using Yes.WebApp.Extensions;
 
 namespace Yes.WebApp.Pages;
 
-public partial class RegisterPage(IAuthenticationService authenticationService, NavigationManager navigationManager, ISnackbar snackbar, IValidator<RegisterRequest> validator)
+public partial class RegisterPage(IAuthenticationService authenticationService, NavigationManager navigationManager, ISnackbar snackbar,
+    IValidator<RegisterRequest> validator)
 {
     private RegisterRequest _request = new();
 
@@ -18,14 +20,8 @@ public partial class RegisterPage(IAuthenticationService authenticationService, 
     {
         snackbar.Clear();
 
-        var validationResult = await validator.ValidateAsync(_request);
-        if (!validationResult.IsValid)
-        {
-            var errors = validationResult.ErrorsToStringArray();
-            foreach (var error in errors) snackbar.Add(error, MudBlazor.Severity.Error, options => options.RequireInteraction = true);
-
-            return;
-        }
+        var isValidBeforeSedingRequest = await _request.IsValidBeforeSedingRequestAsync(validator, snackbar);
+        if (!isValidBeforeSedingRequest) return;
 
         var result = await authenticationService.RegisterAsync(_request);
         switch (result)

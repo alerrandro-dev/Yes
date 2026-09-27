@@ -13,6 +13,16 @@
         </MudNavMenu>
     </MudDrawer>
     <MudMainContent Style="min-height: 100vh" Class="d-flex justify-center align-center">
-        @Body
+        @if (_isLoading) 
+        {
+            <MudStack Row="true">
+                <MudIcon Icon="@Icons.Material.Filled.AccessTime" Color="Color.Info" Size="Size.Large" />
+                <MudText Color="Color.Info" Align="Align.Center" Typo="Typo.h4">The page is loading, wait...</MudText>
+            </MudStack>
+        }
+        else
+        {
+            @Body
+        }
     </MudMainContent>
 </MudLayout>
